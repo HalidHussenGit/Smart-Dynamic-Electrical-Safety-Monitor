@@ -1,2 +1,14 @@
 Timestamp,Temperature,WindSpeed,Humidity,Weather,Resistance,Power,SafeCurrent,Status,Alerts
 2026-05-02T13:35:56,25,2.5,40,Clear,10.0,500.0,10.0,SAFE,Compatibility check
+2026-05-02T14:16:04,10.0,2.0,-12.0,Clear,1.9214,103417.4336,22.813457338701852,DANGEROUS,CRITICAL: System overheating — Shut down immediately recommended
+2026-05-02T14:22:03,12.0,12.0,2.0,Clear,215.98888,114258.11752,2.1517128019539253,DANGEROUS,CRITICAL: System overheating — Shut down immediately recommended
+2026-05-02T14:25:12,12.0,2.0,233.0,Clear,321.56192,170106.25568,1.7634684470881028,DANGEROUS,CRITICAL: System overheating — Shut down immediately recommended | RISK: High humidity detected — Check insulation integrity
+2026-05-02T14:25:22,12.0,2.0,233.0,Clear,321.56192,170106.25568,1.7634684470881028,DANGEROUS,CRITICAL: System overheating — Shut down immediately recommended | RISK: High humidity detected — Check insulation integrity
+2026-05-02T14:25:26,10.0,2.0,-12.0,Clear,1.9214,103417.4336,22.813457338701852,DANGEROUS,CRITICAL: System overheating — Shut down immediately recommended
+2026-05-02T14:25:31,10.0,2.0,-12.0,Clear,1.9214,103417.4336,22.813457338701852,DANGEROUS,CRITICAL: System overheating — Shut down immediately recommended
+2026-05-02T14:25:32,10.0,2.0,-12.0,Clear,1.9214,103417.4336,22.813457338701852,DANGEROUS,CRITICAL: System overheating — Shut down immediately recommended
+2026-05-02T14:25:32,10.0,2.0,-12.0,Clear,1.9214,103417.4336,22.813457338701852,DANGEROUS,CRITICAL: System overheating — Shut down immediately recommended
+2026-05-02T17:24:48,23.0,24.0,65.0,Clear,34.40086,63607.190140000006,5.391571265952307,DANGEROUS,CRITICAL: System overheating — Shut down immediately recommended
+2026-05-02T17:26:04,2.0,24.0,65.0,Clear,31.594839999999998,58418.85915999999,5.625898853099256,DANGEROUS,CRITICAL: System overheating — Shut down immediately recommended
+2026-05-02T17:26:13,2.0,2.0,6.0,Clear,31.594839999999998,58418.85915999999,5.625898853099256,DANGEROUS,CRITICAL: System overheating — Shut down immediately recommended
+2026-05-02T17:26:21,2.0,2.0,6.0,Clear,5.575559999999999,89.20895999999999,13.392318001876548,SAFE,All conditions normal — System operating safely

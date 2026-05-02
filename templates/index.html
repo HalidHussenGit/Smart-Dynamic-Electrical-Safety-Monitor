@@ -5,9 +5,35 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SDESM - Smart Dynamic Electrical Safety Monitor</title>
     <style>
+        /* ── Light mode (default) variables ── */
         body {
-            background: #f4f4f4;
-            color: #000000;
+            --bg-page:    #f4f4f4;
+            --bg-surface: #ffffff;
+            --bg-input:   #ffffff;
+            --bg-log:     #f9f9f9;
+            --bg-alert:   #fffbe6;
+            --bg-th:      #eaeaea;
+            --color-text: #000000;
+            --color-border: #666666;
+            --color-border-strong: #333333;
+        }
+
+        /* ── Dark mode variable overrides ── */
+        body.dark {
+            --bg-page:    #1a1a1a;
+            --bg-surface: #2b2b2b;
+            --bg-input:   #333333;
+            --bg-log:     #222222;
+            --bg-alert:   #2d2a1e;
+            --bg-th:      #3a3a3a;
+            --color-text: #e0e0e0;
+            --color-border: #555555;
+            --color-border-strong: #888888;
+        }
+
+        body {
+            background: var(--bg-page);
+            color: var(--color-text);
             font-family: "Courier New", Courier, monospace;
             margin: 16px;
         }
@@ -18,14 +44,14 @@
 
         .page-shell {
             width: 100%;
-            border: 1px solid #000000;
-            background: #ffffff;
+            border: 1px solid var(--color-border-strong);
+            background: var(--bg-surface);
         }
 
         .header-box {
             width: 100%;
-            border: 1px solid #333333;
-            background: #ffffff;
+            border: 1px solid var(--color-border-strong);
+            background: var(--bg-surface);
         }
 
         .header-title {
@@ -40,8 +66,8 @@
         .panel {
             vertical-align: top;
             width: 50%;
-            border: 1px solid #333333;
-            background: #ffffff;
+            border: 1px solid var(--color-border-strong);
+            background: var(--bg-surface);
             padding: 8px;
         }
 
@@ -62,13 +88,13 @@
         .output-table td,
         .history-table th,
         .history-table td {
-            border: 1px solid #666666;
+            border: 1px solid var(--color-border);
             padding: 4px;
             font-size: 13px;
         }
 
         .history-table th {
-            background: #eaeaea;
+            background: var(--bg-th);
         }
 
         input,
@@ -78,9 +104,9 @@
             font-size: 13px;
             width: 100%;
             box-sizing: border-box;
-            border: 1px solid #666666;
-            background: #ffffff;
-            color: #000000;
+            border: 1px solid var(--color-border);
+            background: var(--bg-input);
+            color: var(--color-text);
         }
 
         button {
@@ -95,10 +121,10 @@
         }
 
         .border-box {
-            border: 1px solid #333333;
+            border: 1px solid var(--color-border-strong);
             padding: 6px;
             margin-top: 8px;
-            background: #ffffff;
+            background: var(--bg-surface);
         }
 
         #alertBox {
@@ -122,6 +148,12 @@
                 <hr>
                 <div class="subtitle">Environmental &amp; Electrical Condition Analyzer</div>
             </td>
+            <!-- IMPROVEMENT 4: Session run counter -->
+            <td style="text-align:right; vertical-align:bottom; font-size:12px; padding:4px;">
+                Session Runs: <span id="sessionRunCount">0</span>
+                &nbsp;&nbsp;
+                <button type="button" id="themeBtn" onclick="toggleTheme()">[ DARK MODE ]</button>
+            </td>
         </tr>
     </table>
 
@@ -134,22 +166,23 @@
             <td class="panel" width="50%">
                 <div class="section-title">System Inputs</div>
                 <table class="input-table">
+                    <!-- IMPROVEMENT 1: Units shown in label column as small plain text -->
                     <tr>
-                        <td>Temperature</td>
+                        <td>Temperature <span style="font-size:11px;">(°C)</span></td>
                         <td>
                             <input type="number" id="tempInput" step="any">
                         </td>
                         <td>°C</td>
                     </tr>
                     <tr>
-                        <td>Wind Speed</td>
+                        <td>Wind Speed <span style="font-size:11px;">(m/s)</span></td>
                         <td>
                             <input type="number" id="windInput" step="any">
                         </td>
                         <td>m/s</td>
                     </tr>
                     <tr>
-                        <td>Humidity</td>
+                        <td>Humidity <span style="font-size:11px;">(%)</span></td>
                         <td>
                             <input type="number" id="humidityInput" step="any">
                         </td>
@@ -169,21 +202,21 @@
                         <td>Condition</td>
                     </tr>
                     <tr>
-                        <td>Initial Resistance</td>
+                        <td>Initial Resistance <span style="font-size:11px;">(Ω)</span></td>
                         <td>
                             <input type="number" id="resistanceInput" step="any">
                         </td>
                         <td>Ω</td>
                     </tr>
                     <tr>
-                        <td>Current</td>
+                        <td>Current <span style="font-size:11px;">(A)</span></td>
                         <td>
                             <input type="number" id="currentInput" step="any">
                         </td>
                         <td>A</td>
                     </tr>
                     <tr>
-                        <td>Voltage</td>
+                        <td>Voltage <span style="font-size:11px;">(V)</span></td>
                         <td>
                             <input type="number" id="voltageInput" step="any">
                         </td>
@@ -192,7 +225,9 @@
                 </table>
 
                 <br>
+                <!-- IMPROVEMENT 2: RESET button placed next to RUN ANALYSIS -->
                 <button type="button" id="runBtn">RUN ANALYSIS</button>
+                <button type="button" id="resetBtn">RESET</button>
 
                 <div class="box-title">System Log:</div>
                 <textarea id="logBox" rows="5" readonly></textarea>
@@ -217,6 +252,11 @@
                     <tr>
                         <td>System Status:</td>
                         <td><span id="outStatus"><b>---</b></span></td>
+                    </tr>
+                    <!-- IMPROVEMENT 5: Last analysis timestamp row -->
+                    <tr>
+                        <td>Last Analysis:</td>
+                        <td><span id="lastAnalysisTime">---</span></td>
                     </tr>
                 </table>
 
@@ -250,8 +290,39 @@
         </tr>
     </table>
 
+    <!-- IMPROVEMENT 7: Plain text footer -->
+    <div style="text-align:center; font-size:11px; margin-top:10px; color:#555555;">
+        SDESM v1.0 &mdash; Smart Dynamic Electrical Safety Monitor &mdash; For Educational Use Only
+    </div>
+
     <!-- JavaScript Section -->
     <script>
+        // ── Theme cycle: light → dark → gray → light ─────────────────────
+        var themeOrder = ['light', 'dark', 'gray'];
+        var themeLabels = { light: '[ DARK MODE ]', dark: '[ GRAY MODE ]', gray: '[ LIGHT MODE ]' };
+        var currentTheme = 'light';
+
+        function applyTheme(theme) {
+            document.body.classList.remove('dark', 'gray');
+            if (theme === 'dark') { document.body.classList.add('dark'); }
+            if (theme === 'gray') { document.body.classList.add('gray'); }
+            currentTheme = theme;
+            document.getElementById('themeBtn').textContent = themeLabels[theme];
+            localStorage.setItem('sdesm_theme', theme);
+        }
+
+        function toggleTheme() {
+            var nextIndex = (themeOrder.indexOf(currentTheme) + 1) % themeOrder.length;
+            applyTheme(themeOrder[nextIndex]);
+        }
+
+        // Restore saved preference on page load
+        (function () {
+            var saved = localStorage.getItem('sdesm_theme');
+            if (saved === 'dark' || saved === 'gray') { applyTheme(saved); }
+        })();
+        // ─────────────────────────────────────────────────────────────────
+
         function appendLogMessage(message) {
             const logBox = document.getElementById("logBox");
             const existingText = logBox.value.trim();
@@ -265,7 +336,121 @@
             return value;
         }
 
+        // Data arrays for the live chart
+        const chartLabels = [];
+        const chartResistance = [];
+        const chartSafeCurrent = [];
+
+        // Initialize the Chart.js line chart for live updates
+        const safetyCtx = document.getElementById('safetyChart').getContext('2d');
+        const safetyChart = new Chart(safetyCtx, {
+            type: 'line',
+            data: {
+                labels: chartLabels,
+                datasets: [
+                    {
+                        label: 'Resistance',
+                        data: chartResistance,
+                        borderColor: '#8b0000',
+                        backgroundColor: 'transparent',
+                        fill: false,
+                        tension: 0
+                    },
+                    {
+                        label: 'Safe Current',
+                        data: chartSafeCurrent,
+                        borderColor: '#00008b',
+                        backgroundColor: 'transparent',
+                        fill: false,
+                        tension: 0
+                    }
+                ]
+            },
+            options: {
+                // responsive: true (the default) measures the CSS container width to resize the
+                // canvas. Inside a <table> layout the container measurement returns 0, which
+                // makes Chart.js render the chart at zero size (completely invisible).
+                // Setting responsive: false tells Chart.js to use the canvas's own
+                // width="400" height="250" HTML attributes directly, bypassing the issue.
+                responsive: false,
+                plugins: {
+                    title: { display: true, text: 'Resistance vs Safe Current' },
+                    legend: { display: true }
+                },
+                animation: { duration: 0 },
+                scales: {
+                    x: { title: { display: true, text: 'Run' } },
+                    y: { title: { display: true, text: 'Value' } }
+                }
+            }
+        });
+
+        // IMPROVEMENT 4: Session run counter — incremented after every successful analysis
+        var sessionRunCount = 0;
+
+        // IMPROVEMENT 2: RESET button handler
+        document.getElementById("resetBtn").addEventListener("click", function () {
+            // Clear all input fields
+            document.getElementById("tempInput").value = "";
+            document.getElementById("windInput").value = "";
+            document.getElementById("humidityInput").value = "";
+            document.getElementById("weatherInput").selectedIndex = 0;
+            document.getElementById("resistanceInput").value = "";
+            document.getElementById("currentInput").value = "";
+            document.getElementById("voltageInput").value = "";
+            // Clear all output spans
+            document.getElementById("outResistance").textContent = "---";
+            document.getElementById("outPower").textContent = "---";
+            document.getElementById("outSafeCurrent").textContent = "---";
+            document.getElementById("outStatus").innerHTML = "<b>---</b>";
+            document.getElementById("outStatus").style.color = "black";
+            document.getElementById("lastAnalysisTime").textContent = "---";
+            // Clear alerts
+            document.getElementById("alertBox").textContent = "";
+            // Clear chart data and redraw empty
+            chartLabels.length = 0;
+            chartResistance.length = 0;
+            chartSafeCurrent.length = 0;
+            safetyChart.update();
+            // Log the reset event
+            appendLogMessage(new Date().toLocaleString() + " - System reset");
+        });
+
         document.getElementById("runBtn").addEventListener("click", function () {
+            // IMPROVEMENT 3: Full input validation before fetch.
+            // Step 1 — check all numeric fields are filled and are valid numbers.
+            var numericFields = [
+                { id: "tempInput",       name: "Temperature" },
+                { id: "windInput",       name: "Wind Speed" },
+                { id: "humidityInput",   name: "Humidity" },
+                { id: "resistanceInput", name: "Initial Resistance" },
+                { id: "currentInput",    name: "Current" },
+                { id: "voltageInput",    name: "Voltage" }
+            ];
+            for (var i = 0; i < numericFields.length; i++) {
+                var rawVal = document.getElementById(numericFields[i].id).value.trim();
+                if (rawVal === "" || isNaN(Number(rawVal))) {
+                    appendLogMessage(new Date().toLocaleString() + " - ERROR: All fields must be filled with valid numbers");
+                    return;
+                }
+            }
+            // Step 2 — range checks
+            var tempVal = parseFloat(document.getElementById("tempInput").value);
+            var humidVal = parseFloat(document.getElementById("humidityInput").value);
+            var resVal = parseFloat(document.getElementById("resistanceInput").value);
+            if (tempVal < -50 || tempVal > 100) {
+                appendLogMessage(new Date().toLocaleString() + " - ERROR: Temperature out of realistic range");
+                return;
+            }
+            if (humidVal < 0 || humidVal > 100) {
+                appendLogMessage(new Date().toLocaleString() + " - ERROR: Humidity must be between 0 and 100");
+                return;
+            }
+            if (resVal <= 0) {
+                appendLogMessage(new Date().toLocaleString() + " - ERROR: Resistance must be a positive value");
+                return;
+            }
+
             const payload = {
                 temperature: document.getElementById("tempInput").value,
                 wind_speed: document.getElementById("windInput").value,
@@ -284,10 +469,15 @@
                 body: JSON.stringify(payload)
             })
             .then(function (response) {
-                if (!response.ok) {
-                    throw new Error("Request failed");
-                }
-                return response.json();
+                // BUG 2 FIX: Read the JSON body BEFORE throwing so the real
+                // Python error message (e.g. "could not convert string to float")
+                // is available instead of the generic "Request failed" string.
+                return response.json().then(function (parsedData) {
+                    if (!response.ok) {
+                        throw new Error(parsedData.error || "Request failed with status " + response.status);
+                    }
+                    return parsedData;
+                });
             })
             .then(function (data) {
                 const resistanceValue = formatValue(data.resistance ?? data.calculatedResistance ?? data.outResistance, "---");
@@ -312,6 +502,21 @@
                     document.getElementById("outStatus").style.color = "black";
                 }
 
+                // Update live chart with the new run data.
+                // Push directly from the raw server numbers, not from the display-formatted
+                // variables (resistanceValue / safeCurrentValue) which formatValue() may have
+                // turned into the string "---" if a key was missing — causing Number("---")
+                // to return NaN, which Chart.js silently drops and never draws.
+                // parseFloat() on the raw JSON values guarantees real numbers every time.
+                chartLabels.push('Run ' + (chartLabels.length + 1));
+                chartResistance.push(parseFloat(data.resistance));
+                chartSafeCurrent.push(parseFloat(data.safe_current));
+                console.log('Chart arrays after push:',
+                    'labels:', chartLabels,
+                    'resistance:', chartResistance,
+                    'safe_current:', chartSafeCurrent);
+                safetyChart.update();
+
                 const alertBox = document.getElementById("alertBox");
                 if (Array.isArray(alertsValue)) {
                     alertBox.innerHTML = alertsValue.join("<br>");
@@ -327,13 +532,27 @@
                 newRow.insertCell(2).textContent = payload.temperature;
                 newRow.insertCell(3).textContent = resistanceValue;
                 newRow.insertCell(4).textContent = powerValue;
-                newRow.insertCell(5).textContent = statusValue;
+                // IMPROVEMENT 6: Color the Status cell in the history row
+                var statusCell = newRow.insertCell(5);
+                statusCell.textContent = statusValue;
+                if (statusValue === "SAFE")      { statusCell.style.color = "green"; }
+                else if (statusValue === "WARNING")   { statusCell.style.color = "orange"; }
+                else if (statusValue === "DANGEROUS") { statusCell.style.color = "red"; }
+
+                // IMPROVEMENT 5: Update last analysis timestamp
+                document.getElementById("lastAnalysisTime").textContent = timestampValue;
+
+                // IMPROVEMENT 4: Increment session run counter
+                sessionRunCount += 1;
+                document.getElementById("sessionRunCount").textContent = sessionRunCount;
 
                 appendLogMessage(timestampValue + " - Analysis complete");
             })
             .catch(function (error) {
-                document.getElementById("alertBox").textContent = "ERROR: Could not complete analysis";
-                appendLogMessage(new Date().toLocaleString() + " - Analysis failed");
+                // BUG 3 FIX: Show the actual error message (now populated by the
+                // Bug 2 fix above) instead of the hardcoded generic string.
+                document.getElementById("alertBox").textContent = "ERROR: " + error.message;
+                appendLogMessage(new Date().toLocaleString() + " - Analysis failed: " + error.message);
                 console.error(error);
             });
         });

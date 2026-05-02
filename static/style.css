@@ -1,8 +1,50 @@
 /* SDESM old-style CSS - classic early 2000s engineering tool look */
 
+/* ── Light mode (default) CSS variables ── */
 body {
-  background: #f0f0f0;
-  color: #1a1a1a;
+  --bg-page:    #f0f0f0;
+  --bg-surface: #ffffff;
+  --bg-input:   #ffffff;
+  --bg-log:     #f9f9f9;
+  --bg-alert:   #fffbe6;
+  --bg-th:      #000000;
+  --color-th:   #ffffff;
+  --color-text: #1a1a1a;
+  --color-border:        #000000;
+  --color-border-light:  #cccccc;
+}
+
+/* ── Dark mode variable overrides ── */
+body.dark {
+  --bg-page:    #1a1a1a;
+  --bg-surface: #2b2b2b;
+  --bg-input:   #333333;
+  --bg-log:     #222222;
+  --bg-alert:   #2d2a1e;
+  --bg-th:      #444444;
+  --color-th:   #e0e0e0;
+  --color-text: #e0e0e0;
+  --color-border:        #666666;
+  --color-border-light:  #555555;
+}
+
+/* ── Gray mode variable overrides ── */
+body.gray {
+  --bg-page:    #b0b0b0;
+  --bg-surface: #d0d0d0;
+  --bg-input:   #c8c8c8;
+  --bg-log:     #bbbbbb;
+  --bg-alert:   #d6d0b8;
+  --bg-th:      #555555;
+  --color-th:   #f0f0f0;
+  --color-text: #111111;
+  --color-border:        #555555;
+  --color-border-light:  #888888;
+}
+
+body {
+  background: var(--bg-page);
+  color: var(--color-text);
   font-family: "Courier New", Courier, monospace;
   font-size: 13px;
   margin: 0;
@@ -13,14 +55,14 @@ body {
 .page-shell {
   max-width: 960px;
   margin: 0 auto;
-  background: #ffffff;
-  border: 2px solid #000000;
+  background: var(--bg-surface);
+  border: 2px solid var(--color-border);
   padding: 10px;
 }
 
 /* Header styling */
 .header-box {
-  border-bottom: 1px solid #000000;
+  border-bottom: 1px solid var(--color-border);
   padding: 8px;
 }
 
@@ -36,7 +78,7 @@ body {
 
 /* Panels (left & right) */
 .panel {
-  border: 1px solid #555555;
+  border: 1px solid var(--color-border);
   vertical-align: top;
   padding: 10px;
 }
@@ -53,8 +95,9 @@ body {
 input[type="number"],
 input[type="text"],
 select {
-  border: 1px solid #000000;
-  background: #ffffff;
+  border: 1px solid var(--color-border);
+  background: var(--bg-input);
+  color: var(--color-text);
   font-family: "Courier New", Courier, monospace;
   font-size: 13px;
   padding: 2px 4px;
@@ -63,8 +106,9 @@ select {
 
 /* RUN ANALYSIS button - old style with hover inversion */
 #runBtn {
-  border: 2px solid #000000;
-  background: #ffffff;
+  border: 2px solid var(--color-border);
+  background: var(--bg-surface);
+  color: var(--color-text);
   font-family: "Courier New", Courier, monospace;
   font-size: 13px;
   font-weight: bold;
@@ -73,16 +117,51 @@ select {
 }
 
 #runBtn:hover {
-  background: #000000;
+  background: var(--color-border);
+  color: var(--bg-surface);
+}
+
+/* RESET button - same style as RUN ANALYSIS, hover is dark red */
+#resetBtn {
+  border: 2px solid var(--color-border);
+  background: var(--bg-surface);
+  color: var(--color-text);
+  font-family: "Courier New", Courier, monospace;
+  font-size: 13px;
+  font-weight: bold;
+  padding: 4px 12px;
+  cursor: pointer;
+  margin-left: 6px;
+}
+
+#resetBtn:hover {
+  background: #8b0000;
   color: #ffffff;
+}
+
+/* Theme toggle button - plain, no bold */
+#themeBtn {
+  border: 1px solid var(--color-border);
+  background: var(--bg-surface);
+  color: var(--color-text);
+  font-family: "Courier New", Courier, monospace;
+  font-size: 11px;
+  padding: 2px 6px;
+  cursor: pointer;
+}
+
+#themeBtn:hover {
+  background: var(--color-border);
+  color: var(--bg-surface);
 }
 
 /* Log box textarea */
 #logBox {
-  border: 1px solid #000000;
+  border: 1px solid var(--color-border);
   font-family: "Courier New", Courier, monospace;
   font-size: 11px;
-  background: #f9f9f9;
+  background: var(--bg-log);
+  color: var(--color-text);
   width: 100%;
   box-sizing: border-box;
   padding: 6px;
@@ -105,9 +184,10 @@ select {
 
 /* Alerts box */
 #alertBox {
-  border: 1px solid #000000;
+  border: 1px solid var(--color-border);
   padding: 8px;
-  background: #fffbe6;
+  background: var(--bg-alert);
+  color: var(--color-text);
   min-height: 40px;
   font-size: 12px;
 }
@@ -120,15 +200,15 @@ select {
 }
 
 #historyTable th {
-  background: #000000;
-  color: #ffffff;
+  background: var(--bg-th);
+  color: var(--color-th);
   padding: 4px;
   font-weight: normal;
   text-align: center;
 }
 
 #historyTable td {
-  border: 1px solid #cccccc;
+  border: 1px solid var(--color-border-light);
   padding: 4px;
   text-align: center;
 }
