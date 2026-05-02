@@ -1,0 +1,150 @@
+/* SDESM old-style CSS - classic early 2000s engineering tool look */
+
+body {
+  background: #f0f0f0;
+  color: #1a1a1a;
+  font-family: "Courier New", Courier, monospace;
+  font-size: 13px;
+  margin: 0;
+  padding: 16px;
+}
+
+/* Main wrapper centered, fixed max width, white background and solid border */
+.page-shell {
+  max-width: 960px;
+  margin: 0 auto;
+  background: #ffffff;
+  border: 2px solid #000000;
+  padding: 10px;
+}
+
+/* Header styling */
+.header-box {
+  border-bottom: 1px solid #000000;
+  padding: 8px;
+}
+
+.header-title {
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.subtitle {
+  font-style: italic;
+  font-size: 12px;
+}
+
+/* Panels (left & right) */
+.panel {
+  border: 1px solid #555555;
+  vertical-align: top;
+  padding: 10px;
+}
+
+/* Section titles (bold + underlined) */
+.section-title {
+  font-weight: bold;
+  text-decoration: underline;
+  font-size: 13px;
+  margin-bottom: 8px;
+}
+
+/* Inputs and selects - plain boxed style */
+input[type="number"],
+input[type="text"],
+select {
+  border: 1px solid #000000;
+  background: #ffffff;
+  font-family: "Courier New", Courier, monospace;
+  font-size: 13px;
+  padding: 2px 4px;
+  box-sizing: border-box;
+}
+
+/* RUN ANALYSIS button - old style with hover inversion */
+#runBtn {
+  border: 2px solid #000000;
+  background: #ffffff;
+  font-family: "Courier New", Courier, monospace;
+  font-size: 13px;
+  font-weight: bold;
+  padding: 4px 12px;
+  cursor: pointer;
+}
+
+#runBtn:hover {
+  background: #000000;
+  color: #ffffff;
+}
+
+/* Log box textarea */
+#logBox {
+  border: 1px solid #000000;
+  font-family: "Courier New", Courier, monospace;
+  font-size: 11px;
+  background: #f9f9f9;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 6px;
+}
+
+/* Output results table styling */
+.output-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.output-table td:first-child {
+  width: 45%;
+  font-weight: normal;
+}
+
+.output-table td:last-child {
+  font-weight: bold;
+}
+
+/* Alerts box */
+#alertBox {
+  border: 1px solid #000000;
+  padding: 8px;
+  background: #fffbe6;
+  min-height: 40px;
+  font-size: 12px;
+}
+
+/* History table */
+#historyTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 11px;
+}
+
+#historyTable th {
+  background: #000000;
+  color: #ffffff;
+  padding: 4px;
+  font-weight: normal;
+  text-align: center;
+}
+
+#historyTable td {
+  border: 1px solid #cccccc;
+  padding: 4px;
+  text-align: center;
+}
+
+/* Status display - bold and a bit larger; color set by JavaScript */
+#outStatus {
+  font-weight: bold;
+  font-size: 14px;
+}
+
+/* General small adjustments for input table cells */
+.input-table td {
+  padding: 4px;
+}
+
+/* Ensure selects and inputs have no rounded corners (explicit) */
+input, select, textarea, button {
+  border-radius: 0;
+}

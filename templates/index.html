@@ -110,6 +110,7 @@
             height: 90px;
         }
     </style>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 </head>
 <body>
@@ -239,6 +240,11 @@
                         </thead>
                         <tbody></tbody>
                     </table>
+                </div>
+                <!-- Live Analysis Graph -->
+                <div class="border-box">
+                    <div class="box-title"><b>Live Analysis Graph:</b></div>
+                    <canvas id="safetyChart" width="400" height="250"></canvas>
                 </div>
             </td>
         </tr>
