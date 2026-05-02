@@ -1,0 +1,2 @@
+Timestamp,Temperature,WindSpeed,Humidity,Weather,Resistance,Power,SafeCurrent,Status,Alerts
+2026-05-02T13:35:56,25,2.5,40,Clear,10.0,500.0,10.0,SAFE,Compatibility check

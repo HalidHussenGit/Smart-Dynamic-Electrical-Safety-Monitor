@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SDESM - Smart Dynamic Electrical Safety Monitor</title>
+    <style>
+        body {
+            background: #f4f4f4;
+            color: #000000;
+            font-family: "Courier New", Courier, monospace;
+            margin: 16px;
+        }
+
+        table {
+            border-collapse: collapse;
+        }
+
+        .page-shell {
+            width: 100%;
+            border: 1px solid #000000;
+            background: #ffffff;
+        }
+
+        .header-box {
+            width: 100%;
+            border: 1px solid #333333;
+            background: #ffffff;
+        }
+
+        .header-title {
+            font-weight: bold;
+            font-size: 20px;
+        }
+
+        .subtitle {
+            font-size: 12px;
+        }
+
+        .panel {
+            vertical-align: top;
+            width: 50%;
+            border: 1px solid #333333;
+            background: #ffffff;
+            padding: 8px;
+        }
+
+        .section-title {
+            font-weight: bold;
+            text-decoration: underline;
+            margin-bottom: 8px;
+        }
+
+        .input-table,
+        .output-table,
+        .history-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .input-table td,
+        .output-table td,
+        .history-table th,
+        .history-table td {
+            border: 1px solid #666666;
+            padding: 4px;
+            font-size: 13px;
+        }
+
+        .history-table th {
+            background: #eaeaea;
+        }
+
+        input,
+        select,
+        textarea {
+            font-family: "Courier New", Courier, monospace;
+            font-size: 13px;
+            width: 100%;
+            box-sizing: border-box;
+            border: 1px solid #666666;
+            background: #ffffff;
+            color: #000000;
+        }
+
+        button {
+            font-family: "Courier New", Courier, monospace;
+            font-size: 13px;
+            padding: 3px 10px;
+        }
+
+        .box-title {
+            font-weight: bold;
+            margin: 8px 0 4px 0;
+        }
+
+        .border-box {
+            border: 1px solid #333333;
+            padding: 6px;
+            margin-top: 8px;
+            background: #ffffff;
+        }
+
+        #alertBox {
+            min-height: 60px;
+            white-space: pre-line;
+        }
+
+        #logBox {
+            height: 90px;
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+</head>
+<body>
+    <!-- Header Section -->
+    <table class="header-box" width="100%">
+        <tr>
+            <td>
+                <div class="header-title">SDESM — Smart Dynamic Electrical Safety Monitor</div>
+                <hr>
+                <div class="subtitle">Environmental &amp; Electrical Condition Analyzer</div>
+            </td>
+        </tr>
+    </table>
+
+    <br>
+
+    <!-- Main Two-Column Layout -->
+    <table class="page-shell" width="100%">
+        <tr>
+            <!-- Input Panel -->
+            <td class="panel" width="50%">
+                <div class="section-title">System Inputs</div>
+                <table class="input-table">
+                    <tr>
+                        <td>Temperature</td>
+                        <td>
+                            <input type="number" id="tempInput" step="any">
+                        </td>
+                        <td>°C</td>
+                    </tr>
+                    <tr>
+                        <td>Wind Speed</td>
+                        <td>
+                            <input type="number" id="windInput" step="any">
+                        </td>
+                        <td>m/s</td>
+                    </tr>
+                    <tr>
+                        <td>Humidity</td>
+                        <td>
+                            <input type="number" id="humidityInput" step="any">
+                        </td>
+                        <td>%</td>
+                    </tr>
+                    <tr>
+                        <td>Weather Condition</td>
+                        <td>
+                            <select id="weatherInput">
+                                <option value="Clear">Clear</option>
+                                <option value="Cloudy">Cloudy</option>
+                                <option value="Rainy">Rainy</option>
+                                <option value="Stormy">Stormy</option>
+                                <option value="Foggy">Foggy</option>
+                            </select>
+                        </td>
+                        <td>Condition</td>
+                    </tr>
+                    <tr>
+                        <td>Initial Resistance</td>
+                        <td>
+                            <input type="number" id="resistanceInput" step="any">
+                        </td>
+                        <td>Ω</td>
+                    </tr>
+                    <tr>
+                        <td>Current</td>
+                        <td>
+                            <input type="number" id="currentInput" step="any">
+                        </td>
+                        <td>A</td>
+                    </tr>
+                    <tr>
+                        <td>Voltage</td>
+                        <td>
+                            <input type="number" id="voltageInput" step="any">
+                        </td>
+                        <td>V</td>
+                    </tr>
+                </table>
+
+                <br>
+                <button type="button" id="runBtn">RUN ANALYSIS</button>
+
+                <div class="box-title">System Log:</div>
+                <textarea id="logBox" rows="5" readonly></textarea>
+            </td>
+
+            <!-- Output Panel -->
+            <td class="panel" width="50%">
+                <div class="section-title">Analysis Results</div>
+                <table class="output-table">
+                    <tr>
+                        <td>Calculated Resistance:</td>
+                        <td><span id="outResistance">---</span></td>
+                    </tr>
+                    <tr>
+                        <td>Power Load:</td>
+                        <td><span id="outPower">---</span></td>
+                    </tr>
+                    <tr>
+                        <td>Safe Current:</td>
+                        <td><span id="outSafeCurrent">---</span></td>
+                    </tr>
+                    <tr>
+                        <td>System Status:</td>
+                        <td><span id="outStatus"><b>---</b></span></td>
+                    </tr>
+                </table>
+
+                <div class="border-box">
+                    <div class="box-title">Active Alerts:</div>
+                    <div id="alertBox"></div>
+                </div>
+
+                <div class="border-box">
+                    <div class="box-title">Transmission History:</div>
+                    <table class="history-table" id="historyTable">
+                        <thead>
+                            <tr>
+                                <th>No.</th>
+                                <th>Time</th>
+                                <th>Temp</th>
+                                <th>Resistance</th>
+                                <th>Power</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </td>
+        </tr>
+    </table>
+
+    <!-- JavaScript Section -->
+    <script>
+        function appendLogMessage(message) {
+            const logBox = document.getElementById("logBox");
+            const existingText = logBox.value.trim();
+            logBox.value = existingText ? existingText + "\n" + message : message;
+        }
+
+        function formatValue(value, fallbackText) {
+            if (value === null || value === undefined || value === "") {
+                return fallbackText;
+            }
+            return value;
+        }
+
+        document.getElementById("runBtn").addEventListener("click", function () {
+            const payload = {
+                temperature: document.getElementById("tempInput").value,
+                wind_speed: document.getElementById("windInput").value,
+                humidity: document.getElementById("humidityInput").value,
+                weather: document.getElementById("weatherInput").value,
+                resistance: document.getElementById("resistanceInput").value,
+                current: document.getElementById("currentInput").value,
+                voltage: document.getElementById("voltageInput").value
+            };
+
+            fetch("/analyze", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(payload)
+            })
+            .then(function (response) {
+                if (!response.ok) {
+                    throw new Error("Request failed");
+                }
+                return response.json();
+            })
+            .then(function (data) {
+                const resistanceValue = formatValue(data.resistance ?? data.calculatedResistance ?? data.outResistance, "---");
+                const powerValue = formatValue(data.power ?? data.calculatedPower ?? data.outPower, "---");
+                const safeCurrentValue = formatValue(data.safe_current ?? data.safeCurrent ?? data.outSafeCurrent, "---");
+                const statusValue = formatValue(data.status ?? data.outStatus, "---");
+                const alertsValue = data.alerts ?? data.alertMessages ?? [];
+                const timestampValue = formatValue(data.timestamp ?? data.time ?? new Date().toLocaleString(), new Date().toLocaleString());
+
+                document.getElementById("outResistance").textContent = resistanceValue;
+                document.getElementById("outPower").textContent = powerValue;
+                document.getElementById("outSafeCurrent").textContent = safeCurrentValue;
+                document.getElementById("outStatus").innerHTML = "<b>" + statusValue + "</b>";
+
+                if (statusValue === "SAFE") {
+                    document.getElementById("outStatus").style.color = "green";
+                } else if (statusValue === "WARNING") {
+                    document.getElementById("outStatus").style.color = "orange";
+                } else if (statusValue === "DANGEROUS") {
+                    document.getElementById("outStatus").style.color = "red";
+                } else {
+                    document.getElementById("outStatus").style.color = "black";
+                }
+
+                const alertBox = document.getElementById("alertBox");
+                if (Array.isArray(alertsValue)) {
+                    alertBox.innerHTML = alertsValue.join("<br>");
+                } else {
+                    alertBox.innerHTML = String(alertsValue).split("\n").join("<br>");
+                }
+
+                const historyBody = document.getElementById("historyTable").querySelector("tbody");
+                const rowNumber = historyBody.rows.length + 1;
+                const newRow = historyBody.insertRow(-1);
+                newRow.insertCell(0).textContent = rowNumber;
+                newRow.insertCell(1).textContent = timestampValue;
+                newRow.insertCell(2).textContent = payload.temperature;
+                newRow.insertCell(3).textContent = resistanceValue;
+                newRow.insertCell(4).textContent = powerValue;
+                newRow.insertCell(5).textContent = statusValue;
+
+                appendLogMessage(timestampValue + " - Analysis complete");
+            })
+            .catch(function (error) {
+                document.getElementById("alertBox").textContent = "ERROR: Could not complete analysis";
+                appendLogMessage(new Date().toLocaleString() + " - Analysis failed");
+                console.error(error);
+            });
+        });
+    </script>
+</body>
+</html>
